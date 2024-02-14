@@ -1,30 +1,59 @@
+import { getTokenUrl } from "frames.js";
 import {
   FrameButton,
   FrameContainer,
   FrameImage,
-  FrameInput,
   FrameReducer,
   NextServerPageProps,
-  getFrameMessage,
   getPreviousFrame,
   useFramesReducer,
 } from "frames.js/next/server";
 import Link from "next/link";
-import { DEBUG_HUB_OPTIONS } from "./debug/constants";
+import { zora } from "viem/chains";
 
 type State = {
-  active: string;
-  total_button_presses: number;
+  pageIndex: number;
 };
 
-const initialState = { active: "1", total_button_presses: 0 };
+const nfts: {
+  src: string;
+  tokenUrl: string;
+}[] = [
+  {
+    src: "https://ipfs.decentralized-content.com/ipfs/bafybeifs7vasy5zbmnpixt7tb6efi35kcrmpoz53d3vg5pwjz52q7fl6pq/cook.png",
+    tokenUrl: getTokenUrl({
+      address: "0x99de131ff1223c4f47316c0bb50e42f356dafdaa",
+      chain: zora,
+      tokenId: "2",
+    }),
+  },
+  {
+    src: "https://remote-image.decentralized-content.com/image?url=https%3A%2F%2Fipfs.decentralized-content.com%2Fipfs%2Fbafybeiegrnialwu66u3nwzkn4gik4i2x2h4ip7y3w2dlymzlpxb5lrqbom&w=1920&q=75",
+    tokenUrl: getTokenUrl({
+      address: "0x060f3edd18c47f59bd23d063bbeb9aa4a8fec6df",
+      chain: zora,
+      tokenId: "1",
+    }),
+  },
+  {
+    src: "https://remote-image.decentralized-content.com/image?url=https%3A%2F%2Fipfs.decentralized-content.com%2Fipfs%2Fbafybeidc6e5t3qmyckqh4fr2ewrov5asmeuv4djycopvo3ro366nd3bfpu&w=1920&q=75",
+    tokenUrl: getTokenUrl({
+      address: "0x8f5ed2503b71e8492badd21d5aaef75d65ac0042",
+      chain: zora,
+      tokenId: "3",
+    }),
+  },
+];
+
+const initialState: State = { pageIndex: 0 };
 
 const reducer: FrameReducer<State> = (state, action) => {
+  const buttonIndex = action.postBody?.untrustedData.buttonIndex;
+
   return {
-    total_button_presses: state.total_button_presses + 1,
-    active: action.postBody?.untrustedData.buttonIndex
-      ? String(action.postBody?.untrustedData.buttonIndex)
-      : "1",
+    pageIndex: buttonIndex
+      ? (state.pageIndex + (buttonIndex === 2 ? 1 : -1)) % nfts.length
+      : state.pageIndex,
   };
 };
 
@@ -34,49 +63,13 @@ export default async function Home({
   searchParams,
 }: NextServerPageProps) {
   const previousFrame = getPreviousFrame<State>(searchParams);
-
-  const frameMessage = await getFrameMessage(previousFrame.postBody, {
-    ...DEBUG_HUB_OPTIONS,
-  });
-
-  if (frameMessage && !frameMessage?.isValid) {
-    throw new Error("Invalid frame payload");
-  }
-
-  const [state, dispatch] = useFramesReducer<State>(
-    reducer,
-    initialState,
-    previousFrame
-  );
-
-  // Here: do a server side side effect either sync or async (using await), such as minting an NFT if you want.
-  // example: load the users credentials & check they have an NFT
-
-  console.log("info: state is:", state);
-
-  if (frameMessage) {
-    const {
-      isValid,
-      buttonIndex,
-      inputText,
-      castId,
-      requesterFid,
-      casterFollowsRequester,
-      requesterFollowsCaster,
-      likedCast,
-      recastedCast,
-      requesterVerifiedAddresses,
-      requesterUserData,
-    } = frameMessage;
-
-    console.log("info: frameMessage is:", frameMessage);
-  }
+  const [state] = useFramesReducer<State>(reducer, initialState, previousFrame);
 
   const baseUrl = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
 
   // then, when done, return next frame
   return (
-    <div className="p-4">
+    <div>
       frames.js starter kit. The Template Frame is on this page, it&apos;s in
       the html meta tags (inspect source).{" "}
       <Link href={`/debug?url=${baseUrl}`} className="underline">
@@ -87,22 +80,15 @@ export default async function Home({
         pathname="/"
         state={state}
         previousFrame={previousFrame}
-      >
-        {/* <FrameImage src="https://framesjs.org/og.png" /> */}
-        <FrameImage aspectRatio="1.91:1">
-          <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
-            {frameMessage?.inputText ? frameMessage.inputText : "Hello world"}
-          </div>
-        </FrameImage>
-        <FrameInput text="put some text here" />
-        <FrameButton>
-          {state?.active === "1" ? "Active" : "Inactive"}
-        </FrameButton>
-        <FrameButton>
-          {state?.active === "2" ? "Active" : "Inactive"}
-        </FrameButton>
-        <FrameButton action="link" target={`https://www.google.com`}>
-          External
+    >
+        <FrameImage
+        src={nfts[state.pageIndex]!.src}
+        aspectRatio="1:1"
+        ></FrameImage>
+        <FrameButton>←</FrameButton>
+        <FrameButton>→</FrameButton>
+        <FrameButton action="mint" target={nfts[state.pageIndex]!.tokenUrl}>
+          Mint
         </FrameButton>
       </FrameContainer>
     </div>
