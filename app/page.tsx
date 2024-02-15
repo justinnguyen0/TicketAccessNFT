@@ -20,7 +20,9 @@ const tokenUrl: string = getTokenUrl({
   chain: baseSepolia,
 })
 
-const initialState: State = { gotTicket: false };
+const initialState: State = { 
+  gotTicket: false
+ };
 
 const reducer: FrameReducer<State> = (state, action) => {
   return {
@@ -52,10 +54,17 @@ export default async function Home({
         state={state}
         previousFrame={previousFrame}
       >
-        <FrameImage
-        src="https://ipfs.decentralized-content.com/ipfs/bafybeifs7vasy5zbmnpixt7tb6efi35kcrmpoz53d3vg5pwjz52q7fl6pq/cook.png"
-        aspectRatio="1:1"
-        ></FrameImage>
+        {!state.gotTicket ? 
+          <FrameImage
+          src="https://ipfs.decentralized-content.com/ipfs/bafybeifs7vasy5zbmnpixt7tb6efi35kcrmpoz53d3vg5pwjz52q7fl6pq/cook.png"
+          aspectRatio="1:1"
+          ></FrameImage> : 
+          <FrameImage>
+            <div tw="w-full h-full bg-black text-white justify-center items-center">
+              You&apos;re going to Coachella!
+            </div>
+          </FrameImage>
+        }
         {!state.gotTicket ? <FrameButton action="mint" target={tokenUrl}>Get Ticket</FrameButton> : null}
       </FrameContainer>
     </div>
