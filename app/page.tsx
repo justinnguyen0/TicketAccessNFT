@@ -43,9 +43,9 @@ export default async function Home({
   // then, when done, return next frame
   return (
     <div>
-      <Link href={`/debug?url=${baseUrl}`} className="underline">
+      {/* <Link href={`/debug?url=${baseUrl}`} className="underline">
         Debug
-      </Link>
+      </Link> */}
       <FrameContainer
         postUrl="/frames"
         pathname="/"
