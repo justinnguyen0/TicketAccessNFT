@@ -43,8 +43,6 @@ export default async function Home({
   // then, when done, return next frame
   return (
     <div>
-      frames.js starter kit. The Template Frame is on this page, it&apos;s in
-      the html meta tags (inspect source).{" "}
       <Link href={`/debug?url=${baseUrl}`} className="underline">
         Debug
       </Link>
@@ -56,7 +54,7 @@ export default async function Home({
       >
         {!state.gotTicket ? 
           <FrameImage
-          src="https://ipfs.decentralized-content.com/ipfs/bafybeifs7vasy5zbmnpixt7tb6efi35kcrmpoz53d3vg5pwjz52q7fl6pq/cook.png"
+          src="https://ipfs.decentralized-content.com/ipfs/QmV2HwXdkd4XjnQmdkTiZ2rgNhsui9ieTKZ5AeUZuJrYct"
           aspectRatio="1:1"
           ></FrameImage> : 
           <FrameImage>
