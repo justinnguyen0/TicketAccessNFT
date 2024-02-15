@@ -9,15 +9,15 @@ import {
   useFramesReducer,
 } from "frames.js/next/server";
 import Link from "next/link";
-import { baseSepolia } from "viem/chains";
+import { baseSepolia, zora } from "viem/chains";
 
 type State = {
   gotTicket: boolean;
 };
 
 const tokenUrl: string = getTokenUrl({
-  address: "0x1c0ff199cbab8fd990b534057e853e32a77646b4",
-  chain: baseSepolia
+  address: "0x060f3edd18c47f59bd23d063bbeb9aa4a8fec6df",
+  chain: zora
 })
 
 const initialState: State = { 
@@ -43,9 +43,9 @@ export default async function Home({
   // then, when done, return next frame
   return (
     <div>
-      {/* <Link href={`/debug?url=${baseUrl}`} className="underline">
+      <Link href={`/debug?url=${baseUrl}`} className="underline">
         Debug
-      </Link> */}
+      </Link>
       <FrameContainer
         postUrl="/frames"
         pathname="/"
@@ -62,7 +62,7 @@ export default async function Home({
           aspectRatio="1:1"
           ></FrameImage>
         }
-        {!state.gotTicket ? <FrameButton action="mint" target={tokenUrl}>Get Ticket</FrameButton> : null}
+        <FrameButton action="post_redirect" target="https://sepolia.basescan.org/address/0x1c0ff199cbab8fd990b534057e853e32a77646b4#writeContract#F3">Get Ticket</FrameButton>
       </FrameContainer>
     </div>
   );
