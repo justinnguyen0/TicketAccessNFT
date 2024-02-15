@@ -57,11 +57,10 @@ export default async function Home({
           src="https://ipfs.decentralized-content.com/ipfs/QmV2HwXdkd4XjnQmdkTiZ2rgNhsui9ieTKZ5AeUZuJrYct"
           aspectRatio="1:1"
           ></FrameImage> : 
-          <FrameImage>
-            <div tw="w-full h-full bg-black text-white justify-center items-center">
-              You&apos;re going to Coachella!
-            </div>
-          </FrameImage>
+          <FrameImage
+          src="https://ipfs.decentralized-content.com/ipfs/QmaFou7CzS42ToV32EqJ7vVnUrZpyckNRbaDg3HSg2VHKu"
+          aspectRatio="1:1"
+          ></FrameImage>
         }
         {!state.gotTicket ? <FrameButton action="mint" target={tokenUrl}>Get Ticket</FrameButton> : null}
       </FrameContainer>
