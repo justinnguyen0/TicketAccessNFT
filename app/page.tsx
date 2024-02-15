@@ -16,9 +16,8 @@ type State = {
 };
 
 const tokenUrl: string = getTokenUrl({
-  address: "0x1c0Ff199cbaB8Fd990b534057E853e32a77646B4",
-  chain: baseSepolia,
-  tokenId: "5"
+  address: "0x1c0ff199cbab8fd990b534057e853e32a77646b4",
+  chain: baseSepolia
 })
 
 const initialState: State = { 
